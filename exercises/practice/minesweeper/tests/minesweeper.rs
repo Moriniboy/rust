@@ -177,3 +177,42 @@ fn large_minefield() {
     let actual = annotate(input);
     assert_eq!(actual, expected);
 }
+
+
+#[test]
+fn large_minefield_with_max_8() {
+    #[rustfmt::skip]
+    let (input, expected) = (&[
+        " * ***",
+        "  ** *",
+        "   ***",
+        "   * *",
+        " *  * ",
+        "      ",
+    ], &[
+        "1*4***",
+        "12**8*",
+        " 14***",
+        "113*6*",
+        "1*22*2",
+        "111111",
+    ]);
+    let actual = annotate(input);
+    assert_eq!(actual, expected);
+}
+
+#[test]
+fn invalid_dimensions_mismatch() {
+    #[rustfmt::skip]
+    let expected: &[&str] = &[];
+    let input = &[
+        " *  * ",
+        "  *   ",
+        "    * ",
+        "   * *    *",
+        " *  * ",
+        "      ",
+    ];
+    let actual = annotate(input);
+    assert_eq!(actual, expected);
+}

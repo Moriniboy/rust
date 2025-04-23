@@ -1,4 +1,45 @@
-/*pub fn annotate(minefield: &[&str]) -> Vec<String> {
+use std::fs::File;
+use std::io;
+use std::io::*;
+use std::path::Path;
+
+pub fn handle_minefield(file_path: &str) -> () {
+    let mut minefield: Vec<String> = Vec::new();
+
+    if let Ok(lines) = read_lines(file_path) {
+        for line in lines.map_while(Result::ok) {
+            minefield.push(line);
+        }
+    }
+
+    let minefield_str: Vec<&str> = minefield.iter().map(AsRef::as_ref).collect();
+
+    let annotated_minefield: Vec<String> = annotate(&minefield_str);
+
+    let path = Path::new(file_path);
+    let mut new_path = path.to_path_buf();
+    new_path.set_extension("out");
+
+
+    let mut file = match File::create(&new_path) {
+        Err(why) => panic!("couldn't create {}: {}", new_path.display(), why),
+        Ok(file) => file,
+    };
+
+    match file.write_all(annotated_minefield.join("\n").as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", new_path.display(), why),
+        Ok(_) => println!("successfully wrote to {}", new_path.display()),
+    }
+}
+
+
+fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
+where P: AsRef<Path>, {
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
+}
+
+fn annotate(minefield: &[&str]) -> Vec<String> {
 
     let mut annotated_field: Vec<String> = Vec::new();
     let mut proto_annotated_field: Vec<Vec<u32>>;
@@ -117,4 +158,4 @@ fn translate_minefield(prototype: Vec<Vec<u32>>, target: &mut Vec<String>) -> ()
 //read from file
 //write one line at a time
 //use error return
-//question mark operator!*/
+//question mark operator!
